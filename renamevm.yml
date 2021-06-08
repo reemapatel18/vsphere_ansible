@@ -1,0 +1,36 @@
+---
+- name: Rename VM in vcenter
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  become: true
+  vars:
+    vcenter_ip: 10.150.4.22
+    vcenter_username: USP01\patelr32
+    vcenter_password: xxxxxx
+    datacenter_name: USDC04    
+    vm_name: computetestvm
+    new_vm_name: computetestvm1
+    cluster_name: USDC04
+    folder_name: "/{{ datacenter_name }}/Customers/A0DF/"
+  tasks:
+    - name: Get VM "{{ vm_name }}" uuid
+      vmware_guest_facts:
+        hostname: "{{ vcenter_ip }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        validate_certs: False
+        datacenter: "{{ datacenter_name }}"
+        folder: "{{folder_name}}"
+        name: "{{ vm_name }}"
+      register: vm_facts
+
+    - name: Rename "{{ vm_name }}" to "{{ new_vm_name }}"
+      vmware_guest:
+        hostname: "{{ vcenter_ip }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        validate_certs: False
+        cluster: "{{ cluster_name }}"
+        uuid: "{{ vm_facts.instance.hw_product_uuid }}"
+        name: "{{ new_vm_name }}"
