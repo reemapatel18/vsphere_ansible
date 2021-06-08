@@ -1,0 +1,26 @@
+---
+
+- hosts: "{{ vm_name }}"
+  tasks:
+
+  - name: run yum update on redhat servers
+    yum:
+      name: "*"
+      disablerepo: "*"
+      enablerepo: "rh*"
+      state: latest
+    when: ansible_facts["distribution"] == "RedHat"
+
+  - name: run yum update on Ubuntu servers
+    apt:
+      upgrade: dist
+      update_cache: yes
+      state: latest
+    when: ansible_distribution == "Ubuntu"
+
+  - name: run yum update on Centos servers
+    yum:
+      name: "*"
+      enablerepo: "CentOS*"
+      state: latest
+    when: ansible_distribution == "CentOS"
