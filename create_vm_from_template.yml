@@ -2,6 +2,7 @@
 - name: Create VM from a template in vcenter
   hosts: localhost
   connection: local
+  gather_facts: no
   become: true
   vars:
     vcenter_ip: 10.150.4.22
@@ -9,12 +10,12 @@
     vcenter_password: xxxxxx
     vm_name: computetestvm
     template_name: A0DFOF404RHE081
-    datastore_name: A001US046BCB001
-    dc: USDC04
+    datastore_name: A0DFxxxxxxx
+    datacenter_name: USDC04
     disk_size: 5 
-    memeory_size: 8192
+    memory_size: 8192
     vlan_id: A0DFUS048VL2015
-    folder_name: /USDC4/Customers/A0DF/
+    folder_name: "/{{ datacenter_name }}/Customers/A0DF/"
   tasks:
     - name: Create VM from template
       vmware_guest:
@@ -22,7 +23,7 @@
         hostname: "{{ vcenter_ip }}"
         username: "{{ vcenter_username }}"
         password: "{{ vcenter_password }}"
-        datacenter: "{{ dc }}"
+        datacenter: "{{ datacenter_name }}"
         name: "{{ vm_name }}"
         template: "{{ template_name }}"
         folder: "{{ folder_name }}"
@@ -37,7 +38,7 @@
           memory_mb: "{{ memory_size | default(2048) }}"
         wait_for_ip_address: True
         state: present
-      register: newvm
+      register: vm_status
     - name: IP address info
       debug:
-        msg: "{{ newvm.instance.ipv4 }} {{ name }}"
+        msg: "{{ vm_status.instance.ipv4 }} {{ vm_name }}"
