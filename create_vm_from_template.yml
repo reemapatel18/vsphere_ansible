@@ -9,7 +9,7 @@
     vcenter_password: xxxxxx
     vm_name: computetestvm
     template_name: A0DFOF404RHE081
-    datastore_name: 
+    datastore_name: A001US046BCB001
     dc: USDC04
     disk_size: 5 
     memeory_size: 8192
