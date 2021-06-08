@@ -1,0 +1,23 @@
+---
+- name: POWER ON VM from vcenter
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  become: true
+  vars:
+    vcenter_ip: 10.150.4.22
+    vcenter_username: USP01\patelr32
+    vcenter_password: xxxxxx
+    vm_name: computetestvm
+    folder_name: /USDC4/Customers/A0DF/
+  tasks:
+    - name: Poweroff the VM
+      community.vmware.vmware_guest_powerstate:
+        hostname: "{{ vcenter_ip }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        folder: "{{ folder_name }}"
+        validate_certs: no        
+        name: "{{ vm_name }}"
+        state: powered-on
+      delegate_to: localhost
